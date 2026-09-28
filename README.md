@@ -1,68 +1,48 @@
-# Zephyr Getting Started
+# Zephyr Project Template
 
-## Zephyr Vanilla
+This template can be used to quickly work with zephyr, it starts by running the devcontainer
 
-### Installation
-- Just follow along this official zephyr article, I use the windows variants: https://docs.zephyrproject.org/latest/develop/getting_started/index.html
+Works out of the box:
+West, Pytest, Renode, Qemu, nRF Connect Extension (vscode)
 
-### Setup Environment
-- Command Prompt
+This repo is meant to easily create and add more apps, hence it is structured with the folder apps, and everything inside stands alone
+
+You can easily extend by adding your preferred SDK (eg: nRF Connect, different Zephyr SDK versions, your companies private Zephyr fork)
+
+## Getting Started
+
+Clone then Rebuild and Reopen in Container. Let the container to build itself, and the default Zephyr SDK to be downloaded
+
+## Build
+
+### ESP32
+
+Build & Run
+
 ```bash
-set ZEPHYR_BASE=%HOMEPATH%\zephyrproject\zephyr & call "%HOMEPATH%\zephyrproject\.venv\Scripts\activate.bat" & west zephyr-export
+west build -s apps/emul-shell-gpio -p always -b esp32s3_devkitc/esp32s3/procpu --no-sysbuild \
+&& west flash --runner esp32 --esp-device /dev/ttyUSB0 \
+&& python3 -m serial.tools.miniterm --raw /dev/ttyUSB0 115200
 ```
-- Powershell
-```powershell
-$env:ZEPHYR_BASE = "$env:HOMEPATH\zephyrproject\zephyr"; & "$env:HOMEPATH\zephyrproject\.venv\Scripts\Activate.ps1"; west zephyr-export
-```
-- For Espressif, install dependencies
+
+### Native Sim
+
+Build & Run
+
 ```bash
-west blobs fetch hal_espressif
+west build -s apps/emul-shell-gpio -p always -b native_sim/native \
+&& ./apps/emul-shell-gpio/build/zephyr/zephyr.exe
 ```
 
-### Create Project
-- Create projects within `%HOMEPATH%\zephyrproject\projects` or wherever really
+Build & Run tests manually
 
-### Build
 ```bash
-west build -b xiao_ble -p always -d build_xiao_ble
-west build -b blackpill_f411ce -p always -d build_blackpill_f411ce
-west build -b esp32s3_devkitc/esp32s3/procpu -p always -d build_esp32s3_devkitc
-west build -b esp32_devkitc_wroom/esp32/procpu -p always # should consider to just use `-d build/` default directory, or else will not be able to use `west espressif monitor`, instead use miniterm
+west build -d apps/emul-shell-gpio/build_test -s apps/emul-shell-gpio/tests/emul_button_toggle -p always -b native_sim/native \
+&& ./apps/emul-shell-gpio/build_test/zephyr/zephyr.exe
 ```
 
-### Flash
+Build & Run tests via Twister
+
 ```bash
-west flash
-west flash --esp-device COM3
-west flash --build-dir build_esp32_devkitc_wroom --esp-device COM3
+west twister -T apps/emul-shell-gpio/tests/emul_button_toggle -p native_sim/native
 ```
-
-### Monitor
-```bash
-west monitor -p COM3
-```
-
-Espressif Systems
-```bash
-west espressif monitor -p COM3
-west espressif monitor --port COM3
-
-# alternatively for espressif systems
-python -m serial.tools.miniterm COM3 115200
-```
-
-Arguments for espressif monitor, aka idf_monitor (under the hood)
-```bash
-# verbose one
-usage: idf_monitor - a serial output monitor for esp-idf [-h] [--port PORT] [--disable-address-decoding] [--baud BAUD] [--make MAKE] [--encrypted] [--toolchain-prefix TOOLCHAIN_PREFIX] [--eol {CR,LF,CRLF}] [--print_filter PRINT_FILTER] [--decode-coredumps {info,disable}] [--decode-panic {backtrace,disable}] [--target TARGET] [--revision REVISION] [--ws WS] [--timestamps] [--timestamp-format TIMESTAMP_FORMAT] elf_file
-
-# shorter one
-west espressif [-h] [-b BAUD] [-p PORT] [-e ELF] [-n EOL] [-d] {monitor}
-```
-
-### Issues
-
-## Zephyr nRF Connect Extension
-
-### Issues
-- Cannot build configuration for board targets other than from nRF (failed on ESP32, Blackpill, Bluepill)
