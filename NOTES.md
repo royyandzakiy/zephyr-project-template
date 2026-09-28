@@ -1,31 +1,41 @@
 ## ESP32
 
+Build & Run
+
 ```bash
-west build -d build_esp32_shell -s apps/04-shell-pytest -p always -b esp32s3_devkitc/esp32s3/procpu --no-sysbuild \
-&& west flash --runner esp32 --esp-device /dev/ttyUSB0 -d build_esp32_shell \
+west build -s apps/emul-shell-gpio -p always -b esp32s3_devkitc/esp32s3/procpu --no-sysbuild \
+&& west flash --runner esp32 --esp-device /dev/ttyUSB0 \
 && python3 -m serial.tools.miniterm --raw /dev/ttyUSB0 115200
 ```
 
 ## Native Sim
 
-```bash
-west build -d build_nativesim_shell -p always -b native_sim/native \
-&& ./build_nativesim_shell/zephyr/zephyr.exe
-```
+Build & Run
 
 ```bash
-west build -d build_nativesim_shell_test -p always -b native_sim/native -s tests/emul_button_toggle \
-&& ./build_nativesim_shell_test/zephyr/zephyr.exe
+west build -s apps/emul-shell-gpio -p always -b native_sim/native \
+&& ./apps/emul-shell-gpio/build/zephyr/zephyr.exe
 ```
 
+Build & Run tests manually
+
 ```bash
-west twister -T tests/emul_button_toggle -p native_sim/native
+west build -d apps/emul-shell-gpio/build_test -s apps/emul-shell-gpio/tests/emul_button_toggle -p always -b native_sim/native \
+&& ./apps/emul-shell-gpio/build_test/zephyr/zephyr.exe
+```
+
+Build & Run tests via Twister
+
+```bash
+west twister -T apps/emul-shell-gpio/tests/emul_button_toggle -p native_sim/native
 ```
 
 ## nRF
 
+Build & Run
+
 ```bash
-west build -d build_nrf52 -s apps/00-hello -p always -b nrf52840dk/nrf52840 \
-&& west flash --runner nrfutil -d build_nrf52 \
+west build -s apps/emul-shell-gpio -p always -b nrf52840dk/nrf52840 \
+&& west flash --runner nrfutil \
 && python3 -m serial.tools.miniterm --raw /dev/ttyACM0 115200
 ```
