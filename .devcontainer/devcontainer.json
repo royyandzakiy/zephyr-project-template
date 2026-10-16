@@ -21,14 +21,15 @@
   ],
 
   "mounts": [
-    // Activate this to pass through usb, required only for windows machines
+    // Optional: host /dev, so USB debug probes are visible in the container.
+    // On Windows, attach the probe to WSL with usbipd first.
     // "source=/dev,target=/dev,type=bind,bind-propagation=rslave",
 
-    // Setting actions runner as volume to not need to reconfig everytime rebuild container
+    // Optional: keeps a GitHub Actions runner's registration across container rebuilds.
     // "source=${localWorkspaceFolderBasename}-actions-runner,target=/actions-runner,type=volume",
 
-    // Store SDKs in volumes with shared name. Designed to be used by any project that needs it
-    // CMake package registry: ensuers nrf SDK extension is able to find all zephyr SDKs
+    // Shared by name across every project on the machine. The CMake package
+    // registry is what the nRF Connect extension reads to find the SDKs.
     "source=zephyr-sdks,target=/workdir/zephyr-sdks,type=volume",
     "source=ncs-sdks,target=/workdir/ncs-sdks,type=volume",
     "source=cmake-registry,target=/root/.cmake,type=volume"

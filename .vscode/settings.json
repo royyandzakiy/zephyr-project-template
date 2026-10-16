@@ -1,6 +1,5 @@
 {
-	"clang-format.style": "file",
-    // ---- Editor: format with clangd, driven by .clang-format ----
+    // Format on save with clangd, which reads .clang-format.
     "[cpp]": {
         "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
         "editor.formatOnSave": true
@@ -11,6 +10,5 @@
     },
     "nrf-connect.applications": [
         "${workspaceFolder}/apps/emul-shell-gpio"
-    ],
-    "cmake.sourceDirectory": "C:/project-coding/iot/projects/zephyr-project-template/apps/emul-shell-gpio",
+    ]
 }
