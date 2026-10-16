@@ -9,6 +9,7 @@
         "editor.formatOnSave": true
     },
     "nrf-connect.applications": [
-        "${workspaceFolder}/apps/emul-shell-gpio"
+        "${workspaceFolder}/apps/emul-shell-gpio",
+        "${workspaceFolder}/apps/renode-test"
     ]
 }
